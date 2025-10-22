@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import type { Quiz } from '../../types/quiz';
 import { Link } from 'react-router-dom';
+import QuizMiniLeaderboard from './QuizMiniLeaderboard';
 
 export default function QuizCard({ quiz }: { quiz: Quiz }) {
   return (
@@ -38,6 +39,8 @@ export default function QuizCard({ quiz }: { quiz: Quiz }) {
           {new Date(quiz.createdAt).toLocaleDateString()}
         </span>
       </div>
+
+      <QuizMiniLeaderboard quizId={quiz.id} />
 
       <Link
         to={`/quiz/${quiz.id}`}
