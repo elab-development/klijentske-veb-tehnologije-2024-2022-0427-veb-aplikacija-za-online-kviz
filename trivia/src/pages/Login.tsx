@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
 import AuthCard from '../components/auth/AuthCard';
 import FormInput from '../components/auth/FormInput';
+import { useAuth } from '../context/AuthContext';
 
 function isValidEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -10,11 +11,13 @@ function isValidEmail(v: string) {
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
   const [showPwd, setShowPwd] = useState(false);
   const [remember, setRemember] = useState(true);
   const [touched, setTouched] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const errors = useMemo(() => {
     if (!touched) return {};
@@ -31,13 +34,18 @@ export default function Login() {
     [email, pwd, errors]
   );
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setTouched(true);
+    setErrorMsg(null);
     if (!canSubmit) return;
-    // TODO: integrate real auth
-    console.log('Login submit', { email, remember });
-    navigate('/');
+    try {
+      await login(email, pwd);
+      // "remember" bi ovde diktirao cookie vs session; za LS ne pravimo razliku
+      navigate('/');
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'Login failed.');
+    }
   }
 
   return (
@@ -54,13 +62,19 @@ export default function Login() {
       }
     >
       <form onSubmit={onSubmit} className='grid gap-4'>
+        {errorMsg && (
+          <div className='rounded-md border border-red-500/50 bg-red-500/10 text-red-200 px-3 py-2 text-sm'>
+            {errorMsg}
+          </div>
+        )}
+
         <FormInput
           label='Email'
           value={email}
           onChange={setEmail}
           placeholder='you@example.com'
           autoComplete='email'
-          error={errors.email}
+          error={(errors as any).email}
           leftIcon={<Mail className='h-4 w-4' />}
           name='email'
         />
@@ -72,7 +86,7 @@ export default function Login() {
           onChange={setPwd}
           placeholder='Your password'
           autoComplete='current-password'
-          error={errors.pwd}
+          error={(errors as any).pwd}
           leftIcon={<Lock className='h-4 w-4' />}
           rightIcon={
             showPwd ? (
