@@ -1,1 +1,8 @@
 @import 'tailwindcss';
+
+.prose :where(p):not(:where([class~='not-prose'] *)) {
+  margin: 0;
+}
+.prose :where(p + p) {
+  margin-top: 0.75rem;
+}
