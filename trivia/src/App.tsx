@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Stats from './pages/Stats';
+import QuizPlay from './pages/QuizPlay';
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
 
         <Route element={<ProtectedLayout />}>
           <Route path='/' element={<Home />} />
+          <Route path='/quiz/:id' element={<QuizPlay />} />
           <Route path='/stats' element={<Stats />} />
         </Route>
       </Routes>
