@@ -1,5 +1,12 @@
-import { BarChart3, CalendarClock, User, Layers } from 'lucide-react';
+import {
+  BarChart3,
+  CalendarClock,
+  User,
+  Layers,
+  PlayCircle,
+} from 'lucide-react';
 import type { Quiz } from '../../types/quiz';
+import { Link } from 'react-router-dom';
 
 export default function QuizCard({ quiz }: { quiz: Quiz }) {
   return (
@@ -32,14 +39,15 @@ export default function QuizCard({ quiz }: { quiz: Quiz }) {
         </span>
       </div>
 
-      <button
+      <Link
+        to={`/quiz/${quiz.id}`}
         className='mt-1 inline-flex justify-center items-center h-9 rounded-md px-3
                    bg-[#1f6f54] hover:bg-[#1a5a45] text-emerald-50 border border-[#2a6a54] transition'
-        disabled
-        title='Coming soon'
+        title='Start quiz'
       >
+        <PlayCircle className='h-4 w-4 mr-2' />
         Start
-      </button>
+      </Link>
     </div>
   );
 }
